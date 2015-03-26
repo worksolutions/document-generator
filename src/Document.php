@@ -9,14 +9,10 @@ namespace WS\DocumentGenerator;
 use WS\DocumentGenerator\Templates\AbstractTemplate;
 use WS\DocumentGenerator\Templates\DocTemplate;
 use WS\DocumentGenerator\Templates\DocxTemplate;
-use WS\DocumentGenerator\Templates\XlsTemplate;
-use WS\DocumentGenerator\Templates\XlsxTemplate;
 
 class Document {
     const TEMPLATE_EXTENSION_DOC = 'doc';
     const TEMPLATE_EXTENSION_DOCX = 'docx';
-    const TEMPLATE_EXTENSION_XLS = 'xls';
-    const TEMPLATE_EXTENSION_XLSX = 'xlsx';
 
     private $_generator;
     private $_values = [];
@@ -71,16 +67,6 @@ class Document {
 
             case self::TEMPLATE_EXTENSION_DOCX:
                 return new DocxTemplate($template);
-
-                break;
-
-            case self::TEMPLATE_EXTENSION_XLS:
-                return new XlsTemplate($template);
-
-                break;
-
-            case self::TEMPLATE_EXTENSION_XLSX:
-                return new XlsxTemplate($template);
 
                 break;
         }
