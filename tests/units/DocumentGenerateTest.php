@@ -7,14 +7,34 @@ namespace WS\DocumentGenerator\Tests\Units;
 
 
 use PHPUnit_Framework_TestCase;
-use WS\DocumentGenerator\WordTemplateProcessor;
+use WS\DocumentGenerator\Document;
 
-class WordTemplateProcessorTest extends PHPUnit_Framework_TestCase {
-    public function testGenerate(){
-        $processor = new WordTemplateProcessor();
-        $outputPath = tempnam(sys_get_temp_dir(), '');
+class DocumentGenerateTest extends PHPUnit_Framework_TestCase {
+    public function testGenerateFromDocx(){
+        $output = $this->_generateByTemplate(__DIR__ . "/../data/docx/template.docx");
 
-        $processor
+        $matcher = new DocxDocumentsMatcher();
+        $isMatch = $matcher->isMatch($output, __DIR__ . '/../data/docx/result.docx');
+
+        unlink($output);
+
+        $this->assertTrue($isMatch);
+    }
+
+    public function testGenerateFromDoc(){
+        $output = $this->_generateByTemplate(__DIR__ . "/../data/doc/template.doc");
+
+        $matcher = new DocxDocumentsMatcher();
+        $isMatch = $matcher->isMatch($output, __DIR__ . '/../data/doc/result.docx');
+
+        unlink($output);
+
+        $this->assertTrue($isMatch);
+    }
+
+    private function _generateByTemplate($template) {
+        $document = new Document($template);
+        $document
             ->setValue('company_name', 'WorkSolutions')
             ->setValue('name', 'Smotrov Dmitriy')
             ->setValue('address', 'Lenina 13')
@@ -44,21 +64,15 @@ class WordTemplateProcessorTest extends PHPUnit_Framework_TestCase {
         $total = 0;
         foreach ($items as $item) {
             $total += $item['product_cost'];
-            $processor->addTableRow('product_title', $item);
+            $document->addValueGroup('product', $item);
         }
 
-        $processor->setValue('total', $total);
+        $document->setValue('total', $total);
 
-        $processor->useTemplate(__DIR__ . "/../data/WordTemplateProcessorTest/testGenerate/template.docx")
-            ->process()
-            ->saveAs($outputPath);
+        $output = tempnam(sys_get_temp_dir(), '');
 
+        $document->saveTo($output);
 
-        $matcher = new WordDocumentsMatcher();
-        $isMatch = $matcher->isMatch($outputPath, __DIR__ . '/../data/WordTemplateProcessorTest/testGenerate/result.docx');
-
-        unlink($outputPath);
-
-        $this->assertTrue($isMatch);
+        return $output;
     }
 }

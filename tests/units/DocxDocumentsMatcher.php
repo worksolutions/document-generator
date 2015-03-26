@@ -10,7 +10,7 @@ use PhpOffice\PhpWord\Shared\ZipArchive;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
-class WordDocumentsMatcher {
+class DocxDocumentsMatcher {
     public function isMatch($document1, $document2) {
         return $this->_countSum($document1) == $this->_countSum($document2);
     }
